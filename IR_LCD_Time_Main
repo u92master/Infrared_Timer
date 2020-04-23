@@ -1,0 +1,71 @@
+/* Code written by Griffin Cox. Inspired by
+ *  https://www.arduino.cc/en/Tutorial/HelloWorld
+ *  https://learn.adafruit.com/ir-breakbeam-sensors?view=all
+ *  Connections (Arduino Uno):
+ *  1602 LCD - D12,11,10,9,8,7
+ *  IR Beam Sensor #1 - D5
+ *  IR Beam Sensor #2 - D6
+ *  RST - switch - GND
+ *  
+ *  Enjoy editing, remixing, or whatever for whatever purpose! (:
+ */
+ 
+#include <LiquidCrystal.h>
+#define sensorPin1 5
+#define sensorPin2 6
+//defines all the variables
+int sensorState1 = 0, lastState1 = 0;
+int sensorState2 = 0, lastState2 = 0;
+unsigned long startTimeUL;
+unsigned long endTimeUL;
+float startTime;
+float endTime;
+float elapsedTime;
+float scaledElapsedTime;
+int myTime = 0;
+//defines the pins the LCD is connected to
+LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
+
+void setup() {
+  lcd.begin(16, 2); //defines the kind of LCD (1602)
+  pinMode(sensorPin1, INPUT);     //Defines sensor pins as inputs
+  digitalWrite(sensorPin1, HIGH); 
+  pinMode(sensorPin2, INPUT);
+  digitalWrite(sensorPin2, HIGH);
+
+  lcd.print("Griffin Cox IR");
+  lcd.setCursor(0, 2);
+  lcd.print("Timer v5.2 (:");
+  delay(3000);
+  lcd.clear(); //clear the LCD
+  lcd.print("Ready!");
+}
+
+void loop(){ 
+  sensorState1 = digitalRead(sensorPin1);
+  sensorState2 = digitalRead(sensorPin2);
+
+  if (sensorState1 == LOW) {     
+   startTimeUL = millis(); //saves the start time as an Unsigned Long
+   startTime = float(startTimeUL); //defines the startTime as a floating point number
+   lcd.setCursor(0, 1);
+   lcd.clear();
+   lcd.print("Timer Started");
+   lcd.setCursor(4, 2);
+  }
+  
+if (sensorState2 == LOW) {
+  endTimeUL = millis();
+  endTime = float(endTimeUL); //defines the endTiem as a floating point number
+  elapsedTime = (endTime - startTime); //calculates the elapsedTime
+  scaledElapsedTime = elapsedTime/1000; //converts the elapsedTime to a more managebale number
+  lcd.clear(); 
+  lcd.setCursor(0, 0);
+  lcd.print("Elapsed time:");
+  lcd.setCursor(0, 1);
+  lcd.print(scaledElapsedTime);
+  lcd.setCursor(7, 1);
+  lcd.print("seconds");
+  delay(30000);
+  }
+}
